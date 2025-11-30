@@ -7,7 +7,6 @@
   2. Removing large char buffers from the loop().
   3. Printing data piece-by-piece to avoid a large buffer.
   4. Managing SPI hardware to resolve conflicts.
-  5. *** CHANGED: Removed 256-byte errorMessage buffer from setup() to fix RAM crash. ***
 
   Sensors:
   - DHT22 (Temp/Hum) -> Pin 2
@@ -115,9 +114,6 @@ void setup() {
   }
   if (!rtc.isrunning()) {
     Serial.println(F("RTC is NOT running, setting time!"));
-    // UNCOMMENT the line below ONCE to set the time,
-    // then RE-COMMENT and RE-UPLOAD.
-    // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
   
   // --- Initialize SCD41 (CO2) ---
@@ -125,7 +121,6 @@ void setup() {
   Serial.println(F("Initializing SCD41 (CO2)..."));
   
   uint16_t error;
-  // char errorMessage[256]; // <-- REMOVED THIS 256-byte BUFFER TO SAVE RAM
   scd4x.begin(Wire, SCD41_I2C_ADDR);
   Serial.println(F("...SCD41 init done.")); 
 
@@ -146,7 +141,6 @@ void setup() {
   Serial.print(F("Initializing SD card..."));
   if (!SD.begin(SD_CS_PIN)) {
     Serial.println(F("...initialization failed!"));
-    // If it fails here, we know it's a conflict
   } else {
     Serial.println(F("...initialization done."));
   }
@@ -192,7 +186,6 @@ void setup() {
 
 void loop() {
   // --- Define buffers for string building ---
-  // char outputBuffer[150]; // <-- REMOVED to save RAM
   char tempBuffer[12]; // Small buffer just for float conversion
 
   // --- 1. Read DHT22 ---
@@ -212,7 +205,6 @@ void loop() {
   DateTime now = rtc.now();
 
   // --- 5. Read DS18B20 (Temp Probe) ---
-  // This call should work now because SPI is disabled
   sensors.requestTemperatures(); 
   float probeTempC = sensors.getTempCByIndex(0);
   if (probeTempC == DEVICE_DISCONNECTED_C) {
@@ -233,7 +225,6 @@ void loop() {
     if (error) {
       Serial.print(F("SCD4M_ERR:")); Serial.println(error);
     } else if (scd4x_co2 == 0) {
-      // Don't update
     }
   }
 
@@ -346,7 +337,6 @@ void loop() {
     Serial.println(F("SD Open Fail"));
 
     // --- Wait for 5 seconds before retrying ---
-    // If we failed, the LED stays solid, and we wait 5s.
     delay(5000); 
   }
 
