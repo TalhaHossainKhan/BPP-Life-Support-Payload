@@ -28,5 +28,5 @@
 
 <p align="center">
   For a detailed report, view the 
-  <a href="VIPS%20Life%20Support%20-%20YPSE.pdf"><b>VIPS Life Support - YPSE PDF</b></a>
+  <a href="VIP Life Support - YPSE.pdf"><b>VIPS Life Support - YPSE PDF</b></a>
 </p>
